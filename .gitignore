@@ -49,3 +49,4 @@ coverage/
 .cursor/
 .roo/
 .taskmaster/ 
+attio.json
