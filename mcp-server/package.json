@@ -1,0 +1,41 @@
+{
+  "name": "attio-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server generated from OpenAPI spec for attio-mcp-server",
+  "private": true,
+  "type": "module",
+  "main": "build/index.js",
+  "files": ["build", "src"],
+  "scripts": {
+    "start": "node build/index.js",
+    "build": "tsc && chmod 755 build/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "prestart": "npm run build",
+    "check": "biome check --write",
+    "lint": "biome lint --write",
+    "format": "biome format --write",
+    "ci": "biome ci"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.4.5",
+    "json-schema-to-zod": "^2.6.1",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
