@@ -5,7 +5,10 @@
   "private": true,
   "type": "module",
   "main": "build/index.js",
-  "files": ["build", "src"],
+  "files": [
+    "build",
+    "src"
+  ],
   "scripts": {
     "start": "node build/index.js",
     "build": "tsc && chmod 755 build/index.js",
@@ -19,7 +22,9 @@
     "format": "biome format --write",
     "ci": "biome ci",
     "test:manual": "node test-manual.js",
-    "test:server": "node -e \"console.log('Starting server... Send JSON-RPC commands via stdin'); require('dotenv').config(); import('./build/index.js')\""
+    "test:server": "node -e \"console.log('Starting server... Send JSON-RPC commands via stdin'); require('dotenv').config(); import('./build/index.js')\"",
+    "apply-tool-names": "tsx src/apply-tool-names.ts",
+    "postbuild": "npm run apply-tool-names"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -38,6 +43,7 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }
