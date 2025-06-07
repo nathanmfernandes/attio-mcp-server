@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import axios from 'axios';
-import { z, ZodError } from 'zod';
+import { ZodError, z } from 'zod';
 
 // Mock modules
 jest.mock('axios');
@@ -86,7 +86,7 @@ describe('Attio MCP Server', () => {
     it('should correctly substitute path parameters', async () => {
       const pathTemplate = '/v2/objects/{object}/records/{record_id}';
       const params = { object: 'contacts', record_id: '123' };
-      
+
       // Test path parameter substitution
       const expectedPath = '/v2/objects/contacts/records/123';
     });
@@ -118,13 +118,13 @@ describe('Attio MCP Server', () => {
   describe('Security', () => {
     it('should fail when access token is missing', async () => {
       delete process.env.ATTIO_ACCESS_TOKEN;
-      
+
       // Test that requests fail without token
     });
 
     it('should use the configured access token', async () => {
       process.env.ATTIO_ACCESS_TOKEN = 'custom-token';
-      
+
       // Test that the custom token is used
     });
   });

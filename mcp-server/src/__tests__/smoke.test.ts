@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 describe('Attio MCP Server Smoke Tests', () => {
   it('should have required environment configuration', () => {

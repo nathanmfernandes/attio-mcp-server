@@ -53,23 +53,27 @@ console.log('\nExample commands:');
 console.log('1. List all tools:');
 console.log('   {"jsonrpc": "2.0", "method": "tools/list", "id": 1}');
 console.log('\n2. Get all objects:');
-console.log('   {"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "getv2objects", "arguments": {}}, "id": 2}');
+console.log(
+  '   {"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "getv2objects", "arguments": {}}, "id": 2}'
+);
 console.log('\n3. Get workspace info:');
-console.log('   {"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "getv2self", "arguments": {}}, "id": 3}');
+console.log(
+  '   {"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "getv2self", "arguments": {}}, "id": 3}'
+);
 console.log('\nType "exit" to quit\n');
 
 rl.prompt();
 
 rl.on('line', (input) => {
   const trimmed = input.trim();
-  
+
   if (trimmed === 'exit') {
     console.log('Shutting down...');
     server.kill();
     rl.close();
     process.exit(0);
   }
-  
+
   if (trimmed) {
     try {
       // Validate JSON

@@ -2,6 +2,13 @@
 
 This is a Model Context Protocol (MCP) server that provides access to the Attio API, enabling AI assistants like Claude and Cursor to interact with your Attio workspace.
 
+## Features
+
+- **🏷️ Human-Readable Tool Names**: Automatically transforms technical API names (like `getv2objects`) into clear, categorized names (like `List Objects`)
+- **📊 Full API Coverage**: Access to objects, records, attributes, lists, tasks, notes, and more
+- **📁 Organized by Category**: Tools are grouped into logical categories for easy navigation
+- **🤖 AI Assistant Ready**: Works seamlessly with Claude Desktop and Cursor
+
 ## Quick Start
 
 1. **Install and configure:**
@@ -44,15 +51,26 @@ This will automatically:
 
 ## Available Tools
 
-The MCP server exposes all Attio API endpoints as tools, including:
+The MCP server exposes all Attio API endpoints as tools with human-readable names, organized by category:
 
-- **Objects & Records**: List, create, update, and delete records
-- **Attributes**: Manage object attributes
-- **Lists**: Create and manage lists
-- **Webhooks**: Set up and manage webhooks
-- **Tasks & Notes**: Create and manage tasks and notes
-- **Comments**: Add and view comments
-- **Workspace**: Manage workspace settings and users
+### Core Data Management
+- **Objects**: `List Objects`, `Create Object`, `Get Object`, `Update Object`
+- **Records**: `List Records`, `Create Record`, `Query Records`, `Delete Record`
+- **Attributes**: `List Attributes`, `Create Attribute`, `Update Attribute Status`
+
+### Lists & Entries
+- **Lists**: `List Lists`, `Create List`, `Update List`
+- **List Entries**: `Create List Entry`, `Query List Entries`, `Update List Entry`
+
+### Collaboration
+- **Tasks**: `List Tasks`, `Create Task`, `Update Task`, `Delete Task`
+- **Notes**: `List Notes`, `Create Note`, `Get Note`, `Delete Note`
+- **Comments**: `Create Comment`, `Get Comment`, `List Comment Threads`
+
+### Administration
+- **Workspace**: `List Workspace Members`, `Get Workspace Member`
+- **Webhooks**: `List Webhooks`, `Create Webhook`, `Update Webhook`
+- **Authentication**: `Get Current User`
 
 ## Manual Testing
 

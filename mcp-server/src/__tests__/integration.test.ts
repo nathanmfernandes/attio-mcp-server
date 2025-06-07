@@ -1,12 +1,12 @@
+import { jest } from '@jest/globals';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { 
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
+import {
   type CallToolRequest,
+  CallToolRequestSchema,
   type ListToolsRequest,
+  ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import axios from 'axios';
-import { jest } from '@jest/globals';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -31,17 +31,17 @@ describe('Attio MCP Server Integration Tests', () => {
 
     // Capture the handlers
     const setRequestHandlerSpy = jest.spyOn(server, 'setRequestHandler');
-    
+
     // Re-import to trigger handler setup
     jest.resetModules();
     const module = await import('../index.js');
 
     // Extract handlers from spy calls
     const listToolsCall = setRequestHandlerSpy.mock.calls.find(
-      call => call[0] === ListToolsRequestSchema
+      (call) => call[0] === ListToolsRequestSchema
     );
     const callToolCall = setRequestHandlerSpy.mock.calls.find(
-      call => call[0] === CallToolRequestSchema
+      (call) => call[0] === CallToolRequestSchema
     );
 
     if (listToolsCall) listToolsHandler = listToolsCall[1] as any;
@@ -59,11 +59,11 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await listToolsHandler(request);
-      
+
       expect(response.tools).toBeDefined();
       expect(Array.isArray(response.tools)).toBe(true);
       expect(response.tools.length).toBeGreaterThan(0);
-      
+
       // Check for some expected tools
       const toolNames = response.tools.map((t: any) => t.name);
       expect(toolNames).toContain('getv2objects');
@@ -78,7 +78,7 @@ describe('Attio MCP Server Integration Tests', () => {
 
       const response = await listToolsHandler(request);
       const objectTool = response.tools.find((t: any) => t.name === 'getv2objects');
-      
+
       expect(objectTool).toBeDefined();
       expect(objectTool.description).toContain('Lists all system-defined and user-defined objects');
       expect(objectTool.inputSchema).toBeDefined();
@@ -110,7 +110,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(mockedAxios).toHaveBeenCalledWith(
         expect.objectContaining({
           method: 'get',
@@ -121,7 +121,7 @@ describe('Attio MCP Server Integration Tests', () => {
           }),
         })
       );
-      
+
       expect(response.content[0].text).toContain('contacts');
       expect(response.content[0].text).toContain('companies');
     });
@@ -145,7 +145,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(response.content[0].text).toContain('401');
       expect(response.content[0].text).toContain('Invalid access token');
     });
@@ -184,7 +184,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(mockedAxios).toHaveBeenCalledWith(
         expect.objectContaining({
           method: 'post',
@@ -228,7 +228,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(mockedAxios).toHaveBeenCalledWith(
         expect.objectContaining({
           url: 'https://api.attio.com/v2/objects/contacts/records/12345',
@@ -250,7 +250,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(response.content[0].text).toContain('Invalid arguments');
     });
 
@@ -266,7 +266,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(response.content[0].text).toContain('Invalid arguments');
     });
   });
@@ -284,7 +284,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(response.content[0].text).toContain('Network Error');
     });
 
@@ -298,7 +298,7 @@ describe('Attio MCP Server Integration Tests', () => {
       };
 
       const response = await callToolHandler(request);
-      
+
       expect(response.content[0].text).toContain('Tool not found');
     });
   });
