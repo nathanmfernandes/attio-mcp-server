@@ -10,9 +10,6 @@ This repository contains an Attio MCP (Model Context Protocol) server generated 
 
 ### Building and Running
 ```bash
-# Navigate to the MCP server directory
-cd mcp-server
-
 # Install dependencies
 npm install
 
@@ -32,6 +29,8 @@ NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/tool-name-transforme
 
 # Manual testing
 npm run test:manual    # Interactive test client
+npm run test:demo      # Demo script with sample commands  
+npm run test:names     # Test tool name transformations
 npm run test:server    # Raw server for JSON-RPC input
 ```
 
@@ -51,15 +50,21 @@ npm run test:server    # Raw server for JSON-RPC input
 # Run the interactive test client
 npm run test:manual
 
+# Quick demo of all functionality
+npm run test:demo
+
+# Test tool name transformations
+npm run test:names
+
 # Example commands using human-readable names:
 # 1. List available tools
 {"jsonrpc": "2.0", "method": "tools/list", "id": 1}
 
 # 2. Call a tool with human-readable name
-{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "List Objects", "arguments": {}}, "id": 2}
+{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "List_Objects", "arguments": {}}, "id": 2}
 
 # 3. Get workspace info
-{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "Get Current User", "arguments": {}}, "id": 3}
+{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "Get_Current_User", "arguments": {}}, "id": 3}
 ```
 
 ### Code Quality
@@ -87,7 +92,7 @@ npm run ci           # CI checks (for pre-commit)
 ## High-Level Architecture
 
 ### MCP Server Structure
-The MCP server (`mcp-server/src/index.ts`) follows a tool-based architecture:
+The MCP server (`src/index.ts`) follows a tool-based architecture:
 
 1. **Tool Definitions**: Each Attio API endpoint is mapped to an MCP tool with:
    - Name, description, and input schema

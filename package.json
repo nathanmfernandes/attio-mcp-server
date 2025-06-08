@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "main": "build/index.js",
-  "files": ["build", "src"],
+  "files": ["build", "src", "tools", "docs"],
   "scripts": {
     "start": "node build/index.js",
     "build": "tsc && chmod 755 build/index.js",
@@ -18,7 +18,9 @@
     "lint": "biome lint --write",
     "format": "biome format --write",
     "ci": "biome ci",
-    "test:manual": "node test-manual.js",
+    "test:manual": "node tools/test-manual.js",
+    "test:demo": "bash tools/demo.sh",
+    "test:names": "node tools/test-transformed-names.js",
     "test:server": "node -e \"console.log('Starting server... Send JSON-RPC commands via stdin'); require('dotenv').config(); import('./build/index.js')\"",
     "apply-tool-names": "tsx src/apply-tool-names.ts",
     "postbuild": "npm run apply-tool-names"
