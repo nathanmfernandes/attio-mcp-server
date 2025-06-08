@@ -1,226 +1,119 @@
-# OpenAPI to MCP Generator (openapi-mcp-generator)
+# Attio MCP Server
 
-[![npm version](https://img.shields.io/npm/v/openapi-mcp-generator.svg)](https://www.npmjs.com/package/openapi-mcp-generator)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub repository](https://img.shields.io/badge/GitHub-harsha--iiiv/openapi--mcp--generator-blue.svg)](https://github.com/harsha-iiiv/openapi-mcp-generator)
+This is a Model Context Protocol (MCP) server that provides access to the Attio API, enabling AI assistants like Claude and Cursor to interact with your Attio workspace.
 
-Generate [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers from OpenAPI specifications.
+## Features
 
-This CLI tool automates the generation of MCP-compatible servers that proxy requests to existing REST APIs—enabling AI agents and other MCP clients to seamlessly interact with your APIs using your choice of transport methods.
+- **🏷️ Human-Readable Tool Names**: Automatically transforms technical API names (like `getv2objects`) into clear, categorized names (like `List Objects`)
+- **📊 Full API Coverage**: Access to objects, records, attributes, lists, tasks, notes, and more
+- **📁 Organized by Category**: Tools are grouped into logical categories for easy navigation
+- **🤖 AI Assistant Ready**: Works seamlessly with Claude Desktop and Cursor
 
----
+## Quick Start
 
-## ✨ Features
+1. **Install and configure:**
+   ```bash
+   ./install.sh
+   ```
 
-- 🔧 **OpenAPI 3.0 Support**: Converts any OpenAPI 3.0+ spec into an MCP-compatible server.
-- 🔁 **Proxy Behavior**: Proxies calls to your original REST API while validating request structure and security.
-- 🔐 **Authentication Support**: API keys, Bearer tokens, Basic auth, and OAuth2 supported via environment variables.
-- 🧪 **Zod Validation**: Automatically generates Zod schemas from OpenAPI definitions for runtime input validation.
-- ⚙️ **Typed Server**: Fully typed, maintainable TypeScript code output.
-- 🔌 **Multiple Transports**: Communicate over stdio, SSE via Hono, or StreamableHTTP.
-- 🧰 **Project Scaffold**: Generates a complete Node.js project with `tsconfig.json`, `package.json`, and entry point.
-- 🧪 **Built-in HTML Test Clients**: Test API interactions visually in your browser (for web-based transports).
+2. **Add your Attio access token to `.env`:**
+   ```
+   ATTIO_ACCESS_TOKEN=your_token_here
+   ```
+   
+   Get your token from: https://app.attio.com/settings/api
 
----
+3. **Restart Claude Desktop or Cursor**
 
-## 🚀 Installation
+## Manual Installation
 
-```bash
-npm install -g openapi-mcp-generator
-```
-
-> You can also use `yarn global add openapi-mcp-generator` or `pnpm add -g openapi-mcp-generator`
-
----
-
-## 🛠 Usage
+### For Claude Desktop
 
 ```bash
-# Generate an MCP server (stdio)
-openapi-mcp-generator --input path/to/openapi.json --output path/to/output/dir
-
-# Generate an MCP web server with SSE
-openapi-mcp-generator --input path/to/openapi.json --output path/to/output/dir --transport=web --port=3000
-
-# Generate an MCP StreamableHTTP server
-openapi-mcp-generator --input path/to/openapi.json --output path/to/output/dir --transport=streamable-http --port=3000
+./install-claude.sh
 ```
 
-### CLI Options
+This will automatically:
+- Add the server to Claude's configuration
+- Configure authentication with your access token
+- Create a backup of existing configuration
 
-| Option             | Alias | Description                                                                                         | Default                         |
-|--------------------|-------|-----------------------------------------------------------------------------------------------------|---------------------------------|
-| `--input`          | `-i`  | Path or URL to OpenAPI specification (YAML or JSON)                                                  | **Required**                    |
-| `--output`         | `-o`  | Directory to output the generated MCP project                                                        | **Required**                    |
-| `--server-name`    | `-n`  | Name of the MCP server (`package.json:name`)                                                         | OpenAPI title or `mcp-api-server` |
-| `--server-version` | `-v`  | Version of the MCP server (`package.json:version`)                                                   | OpenAPI version or `1.0.0`      |
-| `--base-url`       | `-b`  | Base URL for API requests. Required if OpenAPI `servers` missing or ambiguous.                       | Auto-detected if possible       |
-| `--transport`      | `-t`  | Transport mode: `"stdio"` (default), `"web"`, or `"streamable-http"`                                 | `"stdio"`                       |
-| `--port`           | `-p`  | Port for web-based transports                                                                        | `3000`                          |
-| `--force`          |       | Overwrite existing files in the output directory without confirmation                                | `false`                         |
-
-## 📦 Programmatic API
-
-You can also use this package programmatically in your Node.js applications:
-
-```javascript
-import { getToolsFromOpenApi } from 'openapi-mcp-generator';
-
-// Extract MCP tool definitions from an OpenAPI spec
-const tools = await getToolsFromOpenApi('./petstore.json');
-
-// With options
-const filteredTools = await getToolsFromOpenApi('https://example.com/api-spec.json', {
-  baseUrl: 'https://api.example.com',
-  dereference: true,
-  excludeOperationIds: ['deletePet'],
-  filterFn: (tool) => tool.method.toLowerCase() === 'get'
-});
-```
-
-For full documentation of the programmatic API, see [PROGRAMMATIC_API.md](./PROGRAMMATIC_API.md).
-
----
-
-## 🧱 Project Structure
-
-The generated project includes:
-
-```
-<output_directory>/
-├── .gitignore
-├── package.json
-├── tsconfig.json
-├── .env.example
-├── src/
-│   ├── index.ts
-│   └── [transport-specific-files]
-└── public/          # For web-based transports
-    └── index.html   # Test client
-```
-
-Core dependencies:
-- `@modelcontextprotocol/sdk` - MCP protocol implementation
-- `axios` - HTTP client for API requests
-- `zod` - Runtime validation
-- `json-schema-to-zod` - Convert JSON Schema to Zod
-- Transport-specific deps (Hono, uuid, etc.)
-
----
-
-## 📡 Transport Modes
-
-### Stdio (Default)
-
-Communicates with MCP clients via standard input/output. Ideal for local development or integration with LLM tools.
-
-### Web Server with SSE
-
-Launches a fully functional HTTP server with:
-
-- Server-Sent Events (SSE) for bidirectional messaging
-- REST endpoint for client → server communication
-- In-browser test client UI
-- Multi-connection support
-- Built with lightweight Hono framework
-
-### StreamableHTTP
-
-Implements the MCP StreamableHTTP transport which offers:
-
-- Stateful JSON-RPC over HTTP POST requests
-- Session management using HTTP headers
-- Proper HTTP response status codes
-- Built-in error handling
-- Compatibility with MCP StreamableHTTPClientTransport
-- In-browser test client UI
-- Built with lightweight Hono framework
-
-### Transport Comparison
-
-| Feature | stdio | web (SSE) | streamable-http |
-|---------|-------|-----------|----------------|
-| Protocol | JSON-RPC over stdio | JSON-RPC over SSE | JSON-RPC over HTTP |
-| Connection | Persistent | Persistent | Request/response |
-| Bidirectional | Yes | Yes | Yes (stateful) |
-| Multiple clients | No | Yes | Yes |
-| Browser compatible | No | Yes | Yes |
-| Firewall friendly | No | Yes | Yes |
-| Load balancing | No | Limited | Yes |
-| Status codes | No | Limited | Full HTTP codes |
-| Headers | No | Limited | Full HTTP headers |
-| Test client | No | Yes | Yes |
-
----
-
-## 🔐 Environment Variables for Authentication
-
-Configure auth credentials in your environment:
-
-| Auth Type   | Variable Format                                         |
-|-------------|----------------------------------------------------------|
-| API Key     | `API_KEY_<SCHEME_NAME>`                                  |
-| Bearer      | `BEARER_TOKEN_<SCHEME_NAME>`                             |
-| Basic Auth  | `BASIC_USERNAME_<SCHEME_NAME>`, `BASIC_PASSWORD_<SCHEME_NAME>` |
-| OAuth2      | `OAUTH_CLIENT_ID_<SCHEME_NAME>`, `OAUTH_CLIENT_SECRET_<SCHEME_NAME>`, `OAUTH_SCOPES_<SCHEME_NAME>` |
-
----
-
-## ▶️ Running the Generated Server
+### For Cursor
 
 ```bash
-cd path/to/output/dir
-npm install
+./install-cursor.sh
+```
 
-# Run in stdio mode
+This will automatically:
+- Add the server to Cursor's settings
+- Configure authentication with your access token
+- Create a backup of existing settings
+
+## Available Tools
+
+The MCP server exposes all Attio API endpoints as tools with human-readable names, organized by category:
+
+### Core Data Management
+- **Objects**: `List Objects`, `Create Object`, `Get Object`, `Update Object`
+- **Records**: `List Records`, `Create Record`, `Query Records`, `Delete Record`
+- **Attributes**: `List Attributes`, `Create Attribute`, `Update Attribute Status`
+
+### Lists & Entries
+- **Lists**: `List Lists`, `Create List`, `Update List`
+- **List Entries**: `Create List Entry`, `Query List Entries`, `Update List Entry`
+
+### Collaboration
+- **Tasks**: `List Tasks`, `Create Task`, `Update Task`, `Delete Task`
+- **Notes**: `List Notes`, `Create Note`, `Get Note`, `Delete Note`
+- **Comments**: `Create Comment`, `Get Comment`, `List Comment Threads`
+
+### Administration
+- **Workspace**: `List Workspace Members`, `Get Workspace Member`
+- **Webhooks**: `List Webhooks`, `Create Webhook`, `Update Webhook`
+- **Authentication**: `Get Current User`
+
+## Manual Testing
+
+To test the server directly:
+
+```bash
 npm start
-
-# Run in web server mode
-npm run start:web
-
-# Run in StreamableHTTP mode
-npm run start:http
 ```
 
-### Testing Web-Based Servers
+## Configuration
 
-For web and StreamableHTTP transports, a browser-based test client is automatically generated:
+The server uses the following environment variables:
 
-1. Start the server using the appropriate command
-2. Open your browser to `http://localhost:<port>`
-3. Use the test client to interact with your MCP server
+- `ATTIO_ACCESS_TOKEN`: Your Attio workspace access token (required)
+- `PORT`: Port for web transport (default: 3000)
+- `LOG_LEVEL`: Logging level (default: info)
 
----
+## Troubleshooting
 
-## ⚠️ Requirements
+1. **Server not showing in Claude/Cursor:**
+   - Restart the application after installation
+   - Check the logs for any errors
+   - Ensure the server is built: `npm run build`
 
-- Node.js v20 or later
+2. **Authentication errors:**
+   - Verify your access token in `.env`
+   - Ensure the token has the necessary permissions
 
----
+3. **Build errors:**
+   - Run `npm install` to ensure all dependencies are installed
+   - Run `npm run build` to compile TypeScript
 
-## Star History
+## Development
 
-<a href="https://www.star-history.com/#harsha-iiiv/openapi-mcp-generator&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=harsha-iiiv/openapi-mcp-generator&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=harsha-iiiv/openapi-mcp-generator&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=harsha-iiiv/openapi-mcp-generator&type=Date" />
- </picture>
-</a>
+To modify the server:
 
-## 🤝 Contributing
+1. Edit `src/index.ts`
+2. Run `npm run build`
+3. Restart Claude/Cursor to load changes
 
-Contributions are welcome!
+## Support
 
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m "Add amazing feature"`
-4. Push and open a PR
-
-📌 Repository: [github.com/harsha-iiiv/openapi-mcp-generator](https://github.com/harsha-iiiv/openapi-mcp-generator)
-
----
-
-## 📄 License
-
-MIT License — see [LICENSE](./LICENSE) for full details.
+For issues with:
+- **This MCP server**: Create an issue in this repository
+- **Attio API**: Contact support@attio.com
+- **MCP Protocol**: Visit https://modelcontextprotocol.io
