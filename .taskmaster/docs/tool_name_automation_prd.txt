@@ -1,0 +1,56 @@
+# Tool Name Automation System PRD
+
+## Project Overview
+Create an automated system to transform auto-generated OpenAPI tool names into human-readable, organized names for the Attio MCP Server.
+
+## Problem Statement
+Currently, the MCP server generates tool names directly from OpenAPI endpoints (e.g., 'getv2objects', 'postv2objects', 'getv2attributesbyattribute'), which are:
+- Difficult to read and understand
+- Not organized or categorized
+- Hard to navigate in tool menus
+- Not user-friendly for AI assistants and developers
+
+## Solution Requirements
+
+### Core Features
+1. **Name Transformation Engine**
+   - Parse existing tool definitions from generated MCP server code
+   - Transform technical names to readable names using intelligent patterns
+   - Support for HTTP method + resource mapping (GET /v2/objects → "List Objects")
+
+2. **Categorization System**
+   - Group related tools by resource type (Objects, Attributes, Records, Lists, Webhooks, etc.)
+   - Create hierarchical organization for better navigation
+   - Support for sub-categories when needed
+
+3. **Naming Patterns**
+   - Consistent naming conventions (List/Create/Update/Delete patterns)
+   - Contextual names that reflect the actual operation
+   - Proper capitalization and spacing
+
+4. **Automation & Rebuild Capability**
+   - Automated detection of new tools when API changes
+   - Quick rebuild mechanism to update all tool names
+   - Configuration-driven rules for naming patterns
+
+5. **Integration**
+   - Seamless integration with existing MCP server architecture
+   - No breaking changes to existing functionality
+   - Maintain all original tool capabilities
+
+### Technical Specifications
+- TypeScript/Node.js implementation
+- JSON configuration for naming rules
+- Mapping system for tool metadata
+- Build process integration
+- Testing coverage for name transformations
+
+## Success Criteria
+- All tool names are human-readable and intuitive
+- Tools are properly categorized and organized
+- Quick rebuild process (< 30 seconds) when API changes
+- No breaking changes to existing MCP functionality
+- Improved user experience in tool selection interfaces
+
+## Timeline
+High priority - implement within current development cycle 

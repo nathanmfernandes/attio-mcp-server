@@ -90,8 +90,7 @@ mcp-server/.env
 *.backup.*
 
 # Cursor/Claude specific
-.cursor/
 .roo/
-.taskmaster/ 
-attio.json
-README-OpenAPI-to-MCP-Generator.md
+
+# Archive - backup/old files
+archive/

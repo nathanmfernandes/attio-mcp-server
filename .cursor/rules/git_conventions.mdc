@@ -1,0 +1,169 @@
+---
+description: Git-related rules and best practices for version control
+globs: 
+alwaysApply: false
+---
+# Git Rules and Best Practices
+
+## Commit Message Standards
+- Use gitmoji conventional commits format: `<emoji> <type>(<scope>): <description>`
+- Types include: feat, fix, docs, style, refactor, test, chore
+- Keep the first line under 72 characters
+- Use the imperative mood ("Add feature" not "Added feature")
+- Reference issue numbers when applicable
+
+### Emoji Reference
+- 🎉 Initial commit or major new feature
+- ✨ New feature
+- 🐛 Bug fix
+- 📝 Documentation update
+- 🔧 Configuration changes
+- 🚀 Performance improvements
+- 💄 Style/UI updates
+- ♻️ Refactoring code
+- ✅ Adding or updating tests
+- 🔒 Security fixes
+- ⬆️ Upgrading dependencies
+- ⬇️ Downgrading dependencies
+- 🚨 Fixing linter warnings
+- 🔀 Merging branches
+
+## Branch Naming Conventions
+- Feature branches: `feature/<feature-name>`
+- Bug fix branches: `fix/<bug-description>`
+- Release branches: `release/<version>`
+- Hotfix branches: `hotfix/<issue-description>`
+- Use kebab-case for branch names
+
+## Git Workflow
+- Always pull before starting new work
+- Create feature branches from main/master
+- Regularly commit small, logical changes
+- Push branches regularly for backup
+- Create pull requests for code review
+- Squash commits when merging to main/master
+
+## Git Hooks
+- Use pre-commit hooks for linting and formatting (biome, ruff)
+- Use commit-msg hooks to enforce commit message standards (commitlint)
+- Use pre-push hooks for running tests
+
+## Git Configuration
+- Use `.gitignore` to exclude build artifacts, dependencies, and sensitive files
+- Configure `.gitattributes` for proper line endings and binary file handling
+- Use signed commits when possible
+
+## Example Commands
+
+### Commit Examples
+```bash
+# Feature commits
+✨ feat(auth): add JWT authentication system
+✨ feat(ui): implement responsive navigation component
+✨ feat(api): add user profile endpoints
+
+# Bug fix commits
+🐛 fix(auth): resolve token expiration handling
+🐛 fix(ui): correct button alignment on mobile devices
+🐛 fix(api): handle null values in user data
+
+# Documentation commits
+📝 docs(readme): update installation instructions
+📝 docs(api): add endpoint documentation
+📝 docs: add contributing guidelines
+
+# Configuration commits
+🔧 config: update TypeScript compiler options
+🔧 config(docker): optimize container build process
+🔧 config(ci): add automated testing workflow
+
+# Performance commits
+🚀 perf(db): optimize database queries for user search
+🚀 perf(ui): implement lazy loading for images
+🚀 perf: reduce bundle size by 30%
+
+# Refactoring commits
+♻️ refactor(utils): extract common validation functions
+♻️ refactor(components): convert to TypeScript
+♻️ refactor: reorganize project structure
+
+# Test commits
+✅ test(auth): add unit tests for login flow
+✅ test(api): increase coverage for user endpoints
+✅ test: add e2e tests for checkout process
+
+# Dependency commits
+⬆️ deps: upgrade React to v19
+⬇️ deps: downgrade axios to resolve compatibility issue
+🔒 deps: update security vulnerable packages
+
+# Multi-line commit example
+✨ feat(payment): implement Stripe payment integration
+
+- Add payment form component with validation
+- Integrate Stripe SDK for secure processing
+- Add error handling and success states
+- Update user model to track payment history
+
+Resolves: #123
+```
+
+### Common Git Commands
+```bash
+# Basic workflow
+git status                          # Check repository status
+git add .                          # Stage all changes
+git add <file>                     # Stage specific file
+git commit -m "✨ feat: add new feature"  # Commit with message
+git push origin <branch-name>      # Push to remote branch
+
+# Branch management
+git checkout -b feature/new-feature  # Create and switch to new branch
+git checkout main                   # Switch to main branch
+git branch -d feature/old-feature  # Delete local branch
+git push origin --delete feature/old-feature  # Delete remote branch
+
+# Synchronization
+git pull origin main               # Pull latest changes from main
+git fetch --all                    # Fetch all remote branches
+git merge origin/main              # Merge main into current branch
+
+# Commit management
+git log --oneline                  # View commit history (one line)
+git show <commit-hash>             # Show commit details
+git reset --soft HEAD~1            # Undo last commit (keep changes)
+git reset --hard HEAD~1            # Undo last commit (discard changes)
+git revert <commit-hash>           # Create new commit that undoes changes
+
+# Stashing
+git stash                          # Temporarily save uncommitted changes
+git stash pop                      # Apply and remove most recent stash
+git stash list                     # View all stashes
+git stash apply stash@{0}          # Apply specific stash
+
+# Advanced operations
+git rebase -i HEAD~3               # Interactive rebase for last 3 commits
+git cherry-pick <commit-hash>      # Apply specific commit to current branch
+git blame <file>                   # Show who changed each line
+git diff HEAD~1                    # Compare with previous commit
+git clean -fd                      # Remove untracked files and directories
+
+# Configuration
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+git config --global init.defaultBranch main
+git config --global pull.rebase false  # Use merge strategy for pulls
+```
+
+### Useful Aliases
+```bash
+# Add to ~/.gitconfig or run these commands
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+```
