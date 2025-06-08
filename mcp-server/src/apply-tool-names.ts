@@ -42,7 +42,7 @@ async function applyToFile(filePath: string) {
   let content = await fs.readFile(filePath, 'utf-8');
 
   // Check if already patched
-  if (content.includes('tool-name-transformer')) {
+  if (content.includes('humanToOriginalNameMap')) {
     console.log(`${path.basename(filePath)} is already patched with tool name transformer`);
     return;
   }
@@ -50,17 +50,19 @@ async function applyToFile(filePath: string) {
   // Determine file type once
   const isTypeScript = filePath.endsWith('.ts');
 
-  // Add import for transformer
-  const importStatement = `import { transformToolName } from './tool-name-transformer.js';\n`;
-  const lastImportMatch = content.match(/^import[^;]+;$/gm);
-  if (lastImportMatch) {
-    const lastImport = lastImportMatch[lastImportMatch.length - 1];
-    const lastImportIndex = content.lastIndexOf(lastImport);
-    content =
-      content.slice(0, lastImportIndex + lastImport.length) +
-      '\n' +
-      importStatement +
-      content.slice(lastImportIndex + lastImport.length);
+  // Add import for transformer if not already present
+  if (!content.includes("import { transformToolName } from './tool-name-transformer.js'")) {
+    const importStatement = `import { transformToolName } from './tool-name-transformer.js';\n`;
+    const lastImportMatch = content.match(/^import[^;]+;$/gm);
+    if (lastImportMatch) {
+      const lastImport = lastImportMatch[lastImportMatch.length - 1];
+      const lastImportIndex = content.lastIndexOf(lastImport);
+      content =
+        content.slice(0, lastImportIndex + lastImport.length) +
+        '\n' +
+        importStatement +
+        content.slice(lastImportIndex + lastImport.length);
+    }
   }
 
   // Add tool name mapping storage after the toolDefinitionMap
