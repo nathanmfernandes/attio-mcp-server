@@ -9,25 +9,25 @@ describe('Tool Name Transformer', () => {
     test('transforms object operations correctly', () => {
       expect(transformToolName('getv2objects')).toEqual({
         originalName: 'getv2objects',
-        humanReadableName: 'List Objects',
+        humanReadableName: 'List_Objects',
         category: 'Objects',
       });
 
       expect(transformToolName('postv2objects')).toEqual({
         originalName: 'postv2objects',
-        humanReadableName: 'Create Object',
+        humanReadableName: 'Create_Object',
         category: 'Objects',
       });
 
       expect(transformToolName('getv2objectsbyobject')).toEqual({
         originalName: 'getv2objectsbyobject',
-        humanReadableName: 'Get Object',
+        humanReadableName: 'Get_Object',
         category: 'Objects',
       });
 
       expect(transformToolName('patchv2objectsbyobject')).toEqual({
         originalName: 'patchv2objectsbyobject',
-        humanReadableName: 'Update Object',
+        humanReadableName: 'Update_Object',
         category: 'Objects',
       });
     });
@@ -35,19 +35,19 @@ describe('Tool Name Transformer', () => {
     test('transforms record operations correctly', () => {
       expect(transformToolName('postv2objectsrecordsquery')).toEqual({
         originalName: 'postv2objectsrecordsquery',
-        humanReadableName: 'Query Records',
+        humanReadableName: 'Query_Records',
         category: 'Records',
       });
 
       expect(transformToolName('putv2objectsrecords')).toEqual({
         originalName: 'putv2objectsrecords',
-        humanReadableName: 'Update Record',
+        humanReadableName: 'Update_Record',
         category: 'Records',
       });
 
       expect(transformToolName('deletev2objectsrecordsbyrecordid')).toEqual({
         originalName: 'deletev2objectsrecordsbyrecordid',
-        humanReadableName: 'Delete Record',
+        humanReadableName: 'Delete_Record',
         category: 'Records',
       });
     });
@@ -55,19 +55,19 @@ describe('Tool Name Transformer', () => {
     test('transforms attribute operations correctly', () => {
       expect(transformToolName('getv2attributes')).toEqual({
         originalName: 'getv2attributes',
-        humanReadableName: 'List Attributes',
+        humanReadableName: 'List_Attributes',
         category: 'Attributes',
       });
 
       expect(transformToolName('postv2attributesoptions')).toEqual({
         originalName: 'postv2attributesoptions',
-        humanReadableName: 'Create Attribute Option',
+        humanReadableName: 'Create_Attribute_Option',
         category: 'Attributes',
       });
 
       expect(transformToolName('patchv2attributesstatusesbystatus')).toEqual({
         originalName: 'patchv2attributesstatusesbystatus',
-        humanReadableName: 'Update Attribute Status',
+        humanReadableName: 'Update_Attribute_Status',
         category: 'Attributes',
       });
     });
@@ -75,19 +75,19 @@ describe('Tool Name Transformer', () => {
     test('transforms list operations correctly', () => {
       expect(transformToolName('getv2lists')).toEqual({
         originalName: 'getv2lists',
-        humanReadableName: 'List Lists',
+        humanReadableName: 'List_Lists',
         category: 'Lists',
       });
 
       expect(transformToolName('postv2listsentries')).toEqual({
         originalName: 'postv2listsentries',
-        humanReadableName: 'Create List Entry',
+        humanReadableName: 'Create_List_Entry',
         category: 'List Entries',
       });
 
       expect(transformToolName('getv2listsentriesbyentryid')).toEqual({
         originalName: 'getv2listsentriesbyentryid',
-        humanReadableName: 'Get List Entry',
+        humanReadableName: 'Get_List_Entry',
         category: 'List Entries',
       });
     });
@@ -95,13 +95,13 @@ describe('Tool Name Transformer', () => {
     test('transforms workspace operations correctly', () => {
       expect(transformToolName('getv2workspacemembers')).toEqual({
         originalName: 'getv2workspacemembers',
-        humanReadableName: 'List Workspace Members',
+        humanReadableName: 'List_Workspace_Members',
         category: 'Workspace',
       });
 
       expect(transformToolName('getv2self')).toEqual({
         originalName: 'getv2self',
-        humanReadableName: 'Get Current User',
+        humanReadableName: 'Get_Current_User',
         category: 'Authentication',
       });
     });
@@ -109,19 +109,19 @@ describe('Tool Name Transformer', () => {
     test('transforms content operations correctly', () => {
       expect(transformToolName('postv2notes')).toEqual({
         originalName: 'postv2notes',
-        humanReadableName: 'Create Note',
+        humanReadableName: 'Create_Note',
         category: 'Notes',
       });
 
       expect(transformToolName('getv2tasks')).toEqual({
         originalName: 'getv2tasks',
-        humanReadableName: 'List Tasks',
+        humanReadableName: 'List_Tasks',
         category: 'Tasks',
       });
 
       expect(transformToolName('postv2comments')).toEqual({
         originalName: 'postv2comments',
-        humanReadableName: 'Create Comment',
+        humanReadableName: 'Create_Comment',
         category: 'Comments',
       });
     });
@@ -143,7 +143,7 @@ describe('Tool Name Transformer', () => {
       expect(transformations.size).toBe(3);
       expect(transformations.get('getv2objects')).toEqual({
         originalName: 'getv2objects',
-        humanReadableName: 'List Objects',
+        humanReadableName: 'List_Objects',
         category: 'Objects',
       });
     });
