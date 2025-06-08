@@ -46,7 +46,7 @@ coverage/
 *.backup.*
 
 # Cursor/Claude specific
-.cursor/
+# .cursor/
 .roo/
 .taskmaster/ 
 attio.json
