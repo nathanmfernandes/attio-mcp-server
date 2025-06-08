@@ -16,12 +16,12 @@ export interface ToolTransformation {
 function getSingular(resourceName: string): string {
   // Handle special cases
   const specialCases: Record<string, string> = {
-    'Attribute Statuses': 'Attribute Status',
-    'List Entries': 'List Entry',
-    'List Entry Attribute Values': 'List Entry Attribute Values',
-    'Record Attribute Values': 'Record Attribute Values',
-    'Record Entries': 'Record Entries',
-    'Current User': 'Current User',
+    'Attribute_Statuses': 'Attribute_Status',
+    'List_Entries': 'List_Entry',
+    'List_Entry_Attribute_Values': 'List_Entry_Attribute_Values',
+    'Record_Attribute_Values': 'Record_Attribute_Values',
+    'Record_Entries': 'Record_Entries',
+    'Current_User': 'Current_User',
   };
 
   if (specialCases[resourceName]) {
@@ -125,21 +125,21 @@ export function transformToolName(originalName: string): ToolTransformation {
   const resourceNameMap: Record<string, string> = {
     objects: 'Objects',
     objectsrecords: 'Records',
-    objectsrecordsattributesvalues: 'Record Attribute Values',
-    objectsrecordsentries: 'Record Entries',
+    objectsrecordsattributesvalues: 'Record_Attribute_Values',
+    objectsrecordsentries: 'Record_Entries',
     attributes: 'Attributes',
-    attributesoptions: 'Attribute Options',
-    attributesstatuses: 'Attribute Statuses',
+    attributesoptions: 'Attribute_Options',
+    attributesstatuses: 'Attribute_Statuses',
     lists: 'Lists',
-    listsentries: 'List Entries',
-    listsentriesattributesvalues: 'List Entry Attribute Values',
-    workspacemembers: 'Workspace Members',
+    listsentries: 'List_Entries',
+    listsentriesattributesvalues: 'List_Entry_Attribute_Values',
+    workspacemembers: 'Workspace_Members',
     notes: 'Notes',
     tasks: 'Tasks',
-    threads: 'Comment Threads',
+    threads: 'Comment_Threads',
     comments: 'Comments',
     webhooks: 'Webhooks',
-    self: 'Current User',
+    self: 'Current_User',
   };
 
   // Special handling for query endpoints
@@ -151,29 +151,29 @@ export function transformToolName(originalName: string): ToolTransformation {
   // Get clean resource name
   const cleanResourceName =
     resourceNameMap[resourceType] ||
-    resourceType.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (str) => str.toUpperCase());
+    resourceType.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/^./, (str) => str.toUpperCase());
 
   // Build the human-readable name
   if (resourcePath === 'self') {
     // Special case for self endpoint
-    humanReadableName = 'Get Current User';
+    humanReadableName = 'Get_Current_User';
   } else if (action === 'List' && !resourcePath.includes('by')) {
     // For listing multiple items
-    humanReadableName = `${action} ${cleanResourceName}`;
+    humanReadableName = `${action}_${cleanResourceName.replace(/\s+/g, '_')}`;
   } else if (action === 'Get' || (action === 'List' && resourcePath.includes('by'))) {
     // For getting a single item
     const singular = getSingular(cleanResourceName);
-    humanReadableName = `${action} ${singular}`;
+    humanReadableName = `${action}_${singular.replace(/\s+/g, '_')}`;
   } else if (action === 'Create') {
     // For creating items
     const singular = getSingular(cleanResourceName);
-    humanReadableName = `${action} ${singular}`;
+    humanReadableName = `${action}_${singular.replace(/\s+/g, '_')}`;
   } else if (action === 'Query') {
-    humanReadableName = `${action} ${cleanResourceName}`;
+    humanReadableName = `${action}_${cleanResourceName.replace(/\s+/g, '_')}`;
   } else {
     // For update/delete operations
     const singular = getSingular(cleanResourceName);
-    humanReadableName = `${action} ${singular}`;
+    humanReadableName = `${action}_${singular.replace(/\s+/g, '_')}`;
   }
 
   return {
