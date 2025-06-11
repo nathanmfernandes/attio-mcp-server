@@ -40,9 +40,9 @@ if [ ! -d "$MCP_SERVER_PATH/build" ] || [ ! -f "$MCP_SERVER_PATH/build/index.js"
     error_exit "Server not built. Please run 'npm run build' first."
 fi
 
-# Cursor config paths (Cursor uses VS Code's config structure)
-CURSOR_CONFIG_DIR="$HOME/Library/Application Support/Cursor/User"
-CURSOR_SETTINGS_FILE="$CURSOR_CONFIG_DIR/settings.json"
+# Cursor MCP config paths
+CURSOR_CONFIG_DIR="$HOME/.cursor"
+CURSOR_MCP_FILE="$CURSOR_CONFIG_DIR/mcp.json"
 
 # Create config directory if it doesn't exist
 mkdir -p "$CURSOR_CONFIG_DIR" || error_exit "Failed to create Cursor config directory"
@@ -52,17 +52,13 @@ if pgrep -x "Cursor" > /dev/null; then
     warn "Cursor is currently running. You'll need to restart it after installation."
 fi
 
-# Function to parse JSON with comments (JSONC)
-parse_jsonc() {
+# Function to validate JSON (MCP config should be pure JSON, no comments)
+validate_json() {
     node -e "
     const fs = require('fs');
     try {
         const content = fs.readFileSync('$1', 'utf8');
-        // Remove comments
-        const jsonContent = content
-            .replace(/\\/\\*[\\s\\S]*?\\*\\//g, '') // Remove /* */ comments
-            .replace(/\\/\\/.*/g, ''); // Remove // comments
-        JSON.parse(jsonContent);
+        JSON.parse(content);
         process.exit(0);
     } catch (e) {
         process.exit(1);
@@ -70,29 +66,28 @@ parse_jsonc() {
     "
 }
 
-# Check if settings file exists
+# Check if MCP config file exists
 BACKUP_FILE=""
-if [ -f "$CURSOR_SETTINGS_FILE" ]; then
-    echo "Found existing Cursor settings file"
+if [ -f "$CURSOR_MCP_FILE" ]; then
+    echo "Found existing Cursor MCP config file"
     
-    # Try to parse existing settings (may have comments)
-    if ! parse_jsonc "$CURSOR_SETTINGS_FILE"; then
-        error_exit "Existing Cursor settings file has invalid JSON. Please fix it manually."
+    # Validate existing MCP config
+    if ! validate_json "$CURSOR_MCP_FILE"; then
+        error_exit "Existing Cursor MCP config file has invalid JSON. Please fix it manually."
     fi
     
     # Create backup with timestamp
-    BACKUP_FILE="$CURSOR_SETTINGS_FILE.backup.$(date +%Y%m%d_%H%M%S)"
-    cp "$CURSOR_SETTINGS_FILE" "$BACKUP_FILE" || error_exit "Failed to create backup"
+    BACKUP_FILE="$CURSOR_MCP_FILE.backup.$(date +%Y%m%d_%H%M%S)"
+    cp "$CURSOR_MCP_FILE" "$BACKUP_FILE" || error_exit "Failed to create backup"
     success "Created backup: $BACKUP_FILE"
     
     # Check if Attio server already exists
     if node -e "
         const fs = require('fs');
         try {
-            const content = fs.readFileSync('$CURSOR_SETTINGS_FILE', 'utf8');
-            const jsonContent = content.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '').replace(/\\/\\/.*/g, '');
-            const settings = JSON.parse(jsonContent);
-            if (settings.mcp && settings.mcp.servers && settings.mcp.servers.attio) {
+            const content = fs.readFileSync('$CURSOR_MCP_FILE', 'utf8');
+            const config = JSON.parse(content);
+            if (config.mcpServers && config.mcpServers.attio) {
                 process.exit(1);
             }
             process.exit(0);
@@ -111,8 +106,8 @@ if [ -f "$CURSOR_SETTINGS_FILE" ]; then
         fi
     fi
 else
-    echo "Creating new Cursor settings file"
-    echo '{}' > "$CURSOR_SETTINGS_FILE" || error_exit "Failed to create settings file"
+    echo "Creating new Cursor MCP config file"
+    echo '{"mcpServers": {}}' > "$CURSOR_MCP_FILE" || error_exit "Failed to create MCP config file"
 fi
 
 # Load .env file to get the token
@@ -124,48 +119,37 @@ if [ -f "$MCP_SERVER_PATH/.env" ]; then
     set +a
 fi
 
-# Add Attio MCP server to Cursor settings
+# Add Attio MCP server to Cursor MCP config
 if ! node -e "
 const fs = require('fs');
 const path = require('path');
 
 try {
-    const settingsPath = '$CURSOR_SETTINGS_FILE';
+    const configPath = '$CURSOR_MCP_FILE';
     const serverPath = '$MCP_SERVER_PATH';
     const accessToken = process.env.ATTIO_ACCESS_TOKEN || '$ATTIO_ACCESS_TOKEN' || '';
 
-    // Read existing settings
-    let settings = {};
-    let originalContent = '';
-    let hasComments = false;
+    // Read existing config
+    let config = {};
     
     try {
-        originalContent = fs.readFileSync(settingsPath, 'utf8');
-        // Check if file has comments
-        hasComments = originalContent.includes('//') || originalContent.includes('/*');
-        
-        // Remove comments and parse JSON
-        const jsonContent = originalContent
-            .replace(/\\/\\*[\\s\\S]*?\\*\\//g, '')
-            .replace(/\\/\\/.*/g, '');
-        settings = JSON.parse(jsonContent);
+        const content = fs.readFileSync(configPath, 'utf8');
+        config = JSON.parse(content);
     } catch (e) {
-        console.log('Creating new settings object');
+        console.log('Creating new MCP config object');
+        config = { mcpServers: {} };
     }
 
-    // Ensure mcp configuration exists
-    if (!settings['mcp']) {
-        settings['mcp'] = {};
-    }
-    if (!settings['mcp']['servers']) {
-        settings['mcp']['servers'] = {};
+    // Ensure mcpServers exists
+    if (!config.mcpServers) {
+        config.mcpServers = {};
     }
 
     // Store old config if it exists
-    const hadPreviousConfig = !!settings['mcp']['servers']['attio'];
+    const hadPreviousConfig = !!config.mcpServers['attio'];
 
     // Add Attio server
-    settings['mcp']['servers']['attio'] = {
+    config.mcpServers['attio'] = {
         command: 'node',
         args: [path.join(serverPath, 'build', 'index.js')],
         env: {
@@ -173,33 +157,24 @@ try {
         }
     };
 
-    // Write updated settings
-    const newContent = JSON.stringify(settings, null, 2);
-    
-    if (hasComments) {
-        // If original had comments, add a warning comment
-        const warning = '// Note: Comments were removed during MCP server installation.\\n' +
-                       '// Original file backed up with timestamp.\\n\\n';
-        fs.writeFileSync(settingsPath, warning + newContent);
-    } else {
-        fs.writeFileSync(settingsPath, newContent);
-    }
+    // Write updated config with pretty formatting
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\\n');
 
-    console.log(hadPreviousConfig ? 'Updated' : 'Added' + ' Attio MCP server in Cursor settings');
+    console.log(hadPreviousConfig ? 'Updated' : 'Added' + ' Attio MCP server in Cursor MCP config');
     process.exit(0);
 } catch (error) {
-    console.error('Failed to update settings:', error.message);
+    console.error('Failed to update MCP config:', error.message);
     process.exit(1);
 }
 " 2>&1; then
-    error_exit "Failed to update Cursor settings"
+    error_exit "Failed to update Cursor MCP configuration"
 fi
 
 # Verify the configuration was written correctly
-if ! parse_jsonc "$CURSOR_SETTINGS_FILE"; then
+if ! validate_json "$CURSOR_MCP_FILE"; then
     # Try to restore backup
     if [ -n "$BACKUP_FILE" ] && [ -f "$BACKUP_FILE" ]; then
-        mv "$BACKUP_FILE" "$CURSOR_SETTINGS_FILE"
+        mv "$BACKUP_FILE" "$CURSOR_MCP_FILE"
         error_exit "Configuration resulted in invalid JSON. Restored from backup."
     else
         error_exit "Configuration resulted in invalid JSON and no backup available."
@@ -230,10 +205,9 @@ echo ""
 if node -e "
     const fs = require('fs');
     try {
-        const content = fs.readFileSync('$CURSOR_SETTINGS_FILE', 'utf8');
-        const jsonContent = content.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '').replace(/\\/\\/.*/g, '');
-        const settings = JSON.parse(jsonContent);
-        if (!settings.mcp || !settings.mcp.servers || !settings.mcp.servers.attio) {
+        const content = fs.readFileSync('$CURSOR_MCP_FILE', 'utf8');
+        const config = JSON.parse(content);
+        if (!config.mcpServers || !config.mcpServers.attio) {
             process.exit(1);
         }
         process.exit(0);
@@ -243,7 +217,7 @@ if node -e "
 " 2>/dev/null; then
     success "The Attio MCP server has been successfully configured for Cursor."
 else
-    error_exit "Configuration verification failed. Please check the settings file manually."
+    error_exit "Configuration verification failed. Please check the MCP config file manually."
 fi
 
 echo ""
