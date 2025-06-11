@@ -11,6 +11,10 @@ A high-performance Model Context Protocol (MCP) server that provides seamless ac
 - **⚡ High Performance**: Built with Bun for fast execution and native TypeScript support
 - **🔧 Easy Installation**: Automated setup scripts with intelligent configuration detection
 
+
+https://github.com/user-attachments/assets/c3a5fe4c-e97e-4bcb-8140-a88c712a35cd
+
+
 ## Quick Start
 
 1. **Prerequisites:**
