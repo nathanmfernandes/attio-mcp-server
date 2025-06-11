@@ -6629,8 +6629,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   // Sort tools by method order within categories
   toolsForClient.sort((a, b) => {
     // Extract category from description
-    const categoryA = a.description.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
-    const categoryB = b.description.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
+    const categoryA = a.description?.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
+    const categoryB = b.description?.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
     
     // First sort by category
     if (categoryA !== categoryB) {
