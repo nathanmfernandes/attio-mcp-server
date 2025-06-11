@@ -86,13 +86,13 @@ for (const [originalName, definition] of toolDefinitionMap.entries()) {
   // Look for the closing pattern of the Map
   const mapEndPattern = /^\]\);/m;
   const mapStartPattern = /const toolDefinitionMap\s*=\s*new Map\(/;
-  
+
   const startMatch = content.match(mapStartPattern);
   if (startMatch) {
     const startIndex = content.indexOf(startMatch[0]);
     const afterStart = content.slice(startIndex);
     const endMatch = afterStart.match(mapEndPattern);
-    
+
     if (endMatch) {
       const insertIndex = startIndex + afterStart.indexOf(endMatch[0]) + endMatch[0].length;
       content = content.slice(0, insertIndex) + toolMapDeclaration + content.slice(insertIndex);
@@ -113,6 +113,39 @@ for (const [originalName, definition] of toolDefinitionMap.entries()) {
       inputSchema: def.inputSchema,
     };
   });
+  
+  // Sort tools by method order within categories
+  toolsForClient.sort((a, b) => {
+    // Extract category from description
+    const categoryA = a.description.match(/^\\[([^\\]]+)\\]/)?.[1] || 'Other';
+    const categoryB = b.description.match(/^\\[([^\\]]+)\\]/)?.[1] || 'Other';
+    
+    // First sort by category
+    if (categoryA !== categoryB) {
+      return categoryA.localeCompare(categoryB);
+    }
+    
+    // Within the same category, sort by method order
+    const methodA = a.name.split('_')[0];
+    const methodB = b.name.split('_')[0];
+    
+    const methodOrder = ['list', 'get', 'create', 'update', 'delete', 'query'];
+    const orderA = methodOrder.indexOf(methodA);
+    const orderB = methodOrder.indexOf(methodB);
+    
+    if (orderA !== -1 && orderB !== -1) {
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+    } else if (orderA !== -1) {
+      return -1;
+    } else if (orderB !== -1) {
+      return 1;
+    }
+    
+    return a.name.localeCompare(b.name);
+  });
+  
   return { tools: toolsForClient };
 });`;
 

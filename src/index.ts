@@ -23,9 +23,6 @@ import { jsonSchemaToZod } from 'json-schema-to-zod';
 import { ZodError, z } from 'zod';
 import { transformToolName } from './tool-name-transformer.js';
 
-
-
-
 /**
  * Type definition for JSON objects
  */
@@ -6628,6 +6625,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       inputSchema: def.inputSchema,
     };
   });
+  
+  // Sort tools by method order within categories
+  toolsForClient.sort((a, b) => {
+    // Extract category from description
+    const categoryA = a.description.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
+    const categoryB = b.description.match(/^\[([^\]]+)\]/)?.[1] || 'Other';
+    
+    // First sort by category
+    if (categoryA !== categoryB) {
+      return categoryA.localeCompare(categoryB);
+    }
+    
+    // Within the same category, sort by method order
+    const methodA = a.name.split('_')[0];
+    const methodB = b.name.split('_')[0];
+    
+    const methodOrder = ['list', 'get', 'create', 'update', 'delete', 'query'];
+    const orderA = methodOrder.indexOf(methodA);
+    const orderB = methodOrder.indexOf(methodB);
+    
+    if (orderA !== -1 && orderB !== -1) {
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+    } else if (orderA !== -1) {
+      return -1;
+    } else if (orderB !== -1) {
+      return 1;
+    }
+    
+    return a.name.localeCompare(b.name);
+  });
+  
   return { tools: toolsForClient };
 });
 
