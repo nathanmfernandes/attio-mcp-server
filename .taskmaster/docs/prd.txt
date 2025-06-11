@@ -1,0 +1,274 @@
+<context>
+# Overview
+The Attio MCP Server currently has a test suite with significant gaps in coverage and implementation. Out of 32 total tests, 12 are failing (37.5% failure rate) and overall code coverage is only 26.29%. The test suite needs comprehensive refactoring and expansion to achieve 100% test coverage and pass rate.
+
+# Current Test Status Analysis
+**Test Results:**
+- 2 failed test suites, 2 passed test suites
+- 12 failed tests, 20 passed tests
+- Coverage: 26.29% statements, 17.75% branches, 25% functions, 26.4% lines
+
+**Passing Tests:**
+- `tool-name-transformer.test.ts` - 100% passing, covers tool name transformation logic
+- `smoke.test.ts` - Basic configuration and structure validation tests
+
+**Failing Tests:**
+- `integration.test.ts` - All tests failing due to mocking issues and handler extraction problems
+- `index.test.ts` - All tests failing due to improper axios mocking setup
+
+**Root Causes:**
+1. Incorrect mocking setup for axios in ES modules environment
+2. Handler extraction from main server module not working properly
+3. Tests attempting to access private/non-exported functions
+4. Missing test utilities for proper MCP server testing
+5. No coverage for core business logic functions like `executeApiTool` and `getZodSchemaFromJsonSchema`
+
+# Core Features to Test
+1. **Tool Definition Loading** - Verify all 100+ Attio API tools are properly defined
+2. **Tool Name Transformation** - Convert technical names to human-readable format (✅ PASSING)
+3. **MCP Server Protocol** - Handle tools/list and tools/call requests properly
+4. **API Request Execution** - Proxy requests to Attio API with proper auth/validation
+5. **Input Validation** - Zod schema validation for all tool inputs
+6. **Error Handling** - Graceful handling of API errors, validation errors, network issues
+7. **Authentication** - Bearer token application and missing token scenarios
+8. **Parameter Handling** - Path, query, header, and body parameter processing
+9. **Response Formatting** - Proper MCP response formatting for success and error cases
+</context>
+
+<PRD>
+# Technical Architecture
+
+## Current System Analysis
+The Attio MCP Server has a monolithic `index.ts` file (322KB+) containing:
+- Tool definition map with 100+ Attio API endpoints
+- Core functions: `executeApiTool`, `getZodSchemaFromJsonSchema`, `main`
+- Server setup with request handlers for MCP protocol
+- Tool name transformation integration
+
+## Testing Infrastructure Requirements
+1. **Modular Architecture** - Extract core functions into testable modules
+2. **Mock Infrastructure** - Proper ES module mocking for axios and MCP SDK
+3. **Test Utilities** - Helper functions for creating test servers and requests
+4. **Coverage Tools** - Enhanced Jest configuration for comprehensive coverage tracking
+5. **Integration Testing** - Real MCP protocol testing without external API calls
+
+## Data Models to Test
+- `McpToolDefinition` interface validation
+- Tool input/output schema validation
+- Request/response transformation
+- Error response structures
+
+## APIs and Integrations
+- Attio API proxy functionality (mocked)
+- MCP SDK integration and protocol compliance
+- OAuth2 scope validation
+- Bearer token authentication
+
+# Development Roadmap
+
+## Phase 1: Foundation - Test Infrastructure Setup
+**Scope:** Create robust testing foundation and fix existing test failures
+
+**Tasks:**
+1. **Fix ES Module Mocking Issues**
+   - Update Jest configuration for proper ES module support
+   - Fix axios mocking with correct jest.mocked() usage
+   - Resolve module import/export issues in test environment
+
+2. **Extract Testable Functions**
+   - Extract `executeApiTool` function from index.ts to separate module
+   - Extract `getZodSchemaFromJsonSchema` utility function
+   - Create parameter processing utilities (path, query, header, body)
+   - Export tool definition map for testing
+
+3. **Create Test Utilities**
+   - Mock MCP server factory function
+   - Mock Attio API response builders
+   - Test request/response builders for common scenarios
+   - Error response generators
+
+4. **Fix Integration Tests**
+   - Rewrite handler extraction logic
+   - Create proper test server instances
+   - Fix all existing failing tests to pass
+
+## Phase 2: Core Functionality Coverage
+**Scope:** Achieve comprehensive coverage of core MCP server functionality
+
+**Tasks:**
+1. **API Execution Testing**
+   - Test all HTTP methods (GET, POST, PUT, PATCH, DELETE)
+   - Test parameter substitution for all parameter types
+   - Test request body handling for different content types
+   - Test authentication header application
+
+2. **Input Validation Testing**
+   - Test Zod schema generation from JSON schemas
+   - Test validation for all tool input scenarios
+   - Test required vs optional parameter validation
+   - Test type coercion and validation errors
+
+3. **Tool Management Testing**
+   - Test tool definition loading and mapping
+   - Test tool name transformation integration
+   - Test tool discovery and listing
+   - Test human-readable name mapping
+
+4. **Error Handling Coverage**
+   - Test network error scenarios
+   - Test API error responses (4xx, 5xx)
+   - Test validation error handling
+   - Test missing authentication scenarios
+   - Test malformed request handling
+
+## Phase 3: Advanced Features and Edge Cases
+**Scope:** Cover complex scenarios and achieve 100% branch coverage
+
+**Tasks:**
+1. **Complex Parameter Testing**
+   - Test nested object parameters
+   - Test array parameter handling
+   - Test optional parameter combinations
+   - Test parameter transformation edge cases
+
+2. **Security Testing**
+   - Test OAuth2 scope validation
+   - Test token injection and handling
+   - Test unauthorized access scenarios
+   - Test token expiration handling
+
+3. **Performance and Reliability**
+   - Test large payload handling
+   - Test concurrent request scenarios
+   - Test memory usage patterns
+   - Test error recovery mechanisms
+
+4. **Protocol Compliance**
+   - Test full MCP protocol compliance
+   - Test response format validation
+   - Test error response standards
+   - Test tool metadata accuracy
+
+## Phase 4: Coverage Optimization and CI Integration
+**Scope:** Achieve and maintain 100% test coverage with automated quality gates
+
+**Tasks:**
+1. **Coverage Analysis**
+   - Identify and test all uncovered lines
+   - Test all conditional branches
+   - Cover all function paths
+   - Test error conditions and edge cases
+
+2. **Test Quality Enhancement**
+   - Add property-based testing for input validation
+   - Add performance benchmarking tests
+   - Add contract testing for API compatibility
+   - Add mutation testing for test quality validation
+
+3. **Automation and CI**
+   - Set up automated test running on code changes
+   - Configure coverage thresholds (100% required)
+   - Add test performance monitoring
+   - Set up test result reporting
+
+# Logical Dependency Chain
+
+## Foundation First (Phase 1)
+- **Critical:** Fix existing test infrastructure before adding new tests
+- **Blocker:** ES module mocking must work before any integration tests can pass
+- **Dependency:** Function extraction required before comprehensive unit testing
+
+## Core Functionality (Phase 2)
+- **Depends on:** Working test infrastructure from Phase 1
+- **Enables:** Comprehensive coverage of business logic
+- **Prerequisites:** All existing tests must pass before expanding coverage
+
+## Advanced Testing (Phase 3)
+- **Depends on:** Solid core functionality coverage from Phase 2
+- **Focus:** Edge cases and complex scenarios that build on basic functionality
+- **Goal:** 95%+ coverage before moving to optimization phase
+
+## Quality Assurance (Phase 4)
+- **Depends on:** Near-complete coverage from Phase 3
+- **Focus:** Achieving and maintaining 100% coverage
+- **Outcome:** Production-ready test suite with automated quality gates
+
+# Risks and Mitigations
+
+## Technical Challenges
+1. **ES Module Mocking Complexity**
+   - **Risk:** Jest ES module support is experimental and can be fragile
+   - **Mitigation:** Use established patterns, create helper utilities, maintain Jest version compatibility
+
+2. **Large Monolithic File Testing**
+   - **Risk:** 322KB index.ts file is difficult to test comprehensively
+   - **Mitigation:** Extract functions systematically, create focused test modules
+
+3. **MCP Protocol Compliance**
+   - **Risk:** Custom testing may not catch protocol violations
+   - **Mitigation:** Use official MCP SDK test utilities, validate against specification
+
+## Test Quality Risks
+1. **Mock Divergence**
+   - **Risk:** Mocks becoming out of sync with real Attio API
+   - **Mitigation:** Contract testing, regular API integration validation
+
+2. **Test Maintenance Burden**
+   - **Risk:** High number of tests becoming difficult to maintain
+   - **Mitigation:** Focus on test quality over quantity, use parameterized tests
+
+3. **Coverage Gaming**
+   - **Risk:** Achieving 100% coverage without meaningful testing
+   - **Mitigation:** Mutation testing, code review processes, meaningful assertions
+
+## Resource Constraints
+1. **Development Time**
+   - **Risk:** Comprehensive testing requires significant time investment
+   - **Mitigation:** Phased approach, prioritize critical paths first
+
+2. **Test Execution Performance**
+   - **Risk:** Large test suite may become slow to execute
+   - **Mitigation:** Parallel execution, focused test selection, performance monitoring
+
+# Success Metrics
+
+## Coverage Targets
+- **Statements:** 100%
+- **Branches:** 100%
+- **Functions:** 100%
+- **Lines:** 100%
+
+## Quality Targets
+- **Test Pass Rate:** 100%
+- **Test Execution Time:** < 10 seconds for full suite
+- **Test Reliability:** 0 flaky tests
+- **Maintenance Burden:** < 2 hours/month for test updates
+
+## Functional Coverage
+- **All API Tools:** Every Attio API endpoint has test coverage
+- **All Error Scenarios:** Every error path is tested
+- **All Parameter Types:** Every parameter combination is validated
+- **Protocol Compliance:** Full MCP specification compliance verified
+
+# Appendix
+
+## Current Test File Analysis
+1. **tool-name-transformer.test.ts** - ✅ Comprehensive, well-structured, 100% passing
+2. **smoke.test.ts** - ✅ Basic validation, good foundation
+3. **integration.test.ts** - ❌ Conceptually correct but implementation broken
+4. **index.test.ts** - ❌ Incomplete implementation, mocking issues
+
+## Technical Specifications
+- **Jest Version:** 29.x with ES module support
+- **Coverage Tool:** Built-in Jest coverage with istanbul
+- **Mocking Strategy:** ES module compatible mocking
+- **Test Environment:** Node.js with experimental VM modules
+- **Code Quality:** TypeScript strict mode, Biome linting
+
+## Research Findings
+- Current 26.29% coverage indicates significant untested code paths
+- Tool name transformer is the most mature and well-tested component
+- Main server logic (index.ts) has only 8.55% coverage
+- Mocking infrastructure needs complete rebuild for ES modules
+- Test utilities are completely missing and need to be built from scratch
+</PRD>
