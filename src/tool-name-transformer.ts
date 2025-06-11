@@ -81,13 +81,13 @@ export function transformToolName(originalName: string): ToolTransformation {
   };
 
   let category = 'Other';
-  let mainResource = '';
+  let _mainResource = '';
 
   // Find the main resource from the path (check compound resources first)
   for (const [key, cat] of Object.entries(resourceCategories)) {
     if (resourcePath.startsWith(key)) {
       category = cat;
-      mainResource = key;
+      _mainResource = key;
       break;
     }
   }
@@ -213,17 +213,17 @@ export function groupToolsByCategory(
   }
 
   // Sort tools within each category by method first, then by resource name
-  for (const [category, tools] of grouped.entries()) {
+  for (const [_category, tools] of grouped.entries()) {
     tools.sort((a, b) => {
       // Extract method (first part before underscore)
       const methodA = a.humanReadableName.split('_')[0];
       const methodB = b.humanReadableName.split('_')[0];
-      
+
       // Define method priority order
       const methodOrder = ['list', 'get', 'create', 'update', 'delete', 'query'];
       const orderA = methodOrder.indexOf(methodA);
       const orderB = methodOrder.indexOf(methodB);
-      
+
       // If both methods are in our defined order, sort by that order
       if (orderA !== -1 && orderB !== -1) {
         if (orderA !== orderB) {
@@ -233,11 +233,10 @@ export function groupToolsByCategory(
       // If one method is in our order and the other isn't, prioritize the ordered one
       else if (orderA !== -1) {
         return -1;
-      }
-      else if (orderB !== -1) {
+      } else if (orderB !== -1) {
         return 1;
       }
-      
+
       // If methods are the same or both not in our defined order, sort alphabetically
       return a.humanReadableName.localeCompare(b.humanReadableName);
     });

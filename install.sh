@@ -56,7 +56,7 @@ fi
 # Check if node_modules exists
 if [ ! -d "node_modules" ]; then
     echo "Installing dependencies..."
-    if ! npm install; then
+    if ! bun install; then
         error_exit "Failed to install dependencies"
     fi
     success "Dependencies installed"
@@ -67,7 +67,7 @@ fi
 # Check if built
 if [ ! -d "build" ]; then
     echo "Building the server..."
-    if ! npm run build; then
+    if ! bun run build; then
         error_exit "Failed to build the server"
     fi
     success "Server built successfully"
@@ -76,7 +76,7 @@ else
     if [ -f "src/index.ts" ]; then
         if [ "src/index.ts" -nt "build/index.js" ]; then
             warn "Source files are newer than build. Rebuilding..."
-            if ! npm run build; then
+            if ! bun run build; then
                 error_exit "Failed to rebuild the server"
             fi
             success "Server rebuilt successfully"
@@ -88,7 +88,7 @@ fi
 
 # Verify build output exists
 if [ ! -f "build/index.js" ]; then
-    error_exit "Build output not found. Please run 'npm run build' manually"
+    error_exit "Build output not found. Please run 'bun run build' manually"
 fi
 
 # Check for .env file
@@ -235,7 +235,7 @@ esac
 
 echo ""
 echo "To test the server manually, run:"
-echo "  npm start"
+echo "  bun start"
 echo ""
 
 if [ "$HAS_TOKEN" = false ]; then

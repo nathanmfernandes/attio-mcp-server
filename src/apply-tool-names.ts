@@ -23,7 +23,7 @@ async function applyToolNames() {
         await applyToFile(filePath);
       } catch (err: any) {
         if (filePath === buildPath && err?.code === 'ENOENT') {
-          console.log('Build file not found, skipping...');
+          // Build file not found, skip
         } else {
           throw err;
         }
@@ -36,14 +36,11 @@ async function applyToolNames() {
 }
 
 async function applyToFile(filePath: string) {
-  console.log(`Processing ${filePath}...`);
-
   // Read the current file
   let content = await fs.readFile(filePath, 'utf-8');
 
   // Check if already patched
   if (content.includes('humanToOriginalNameMap')) {
-    console.log(`${path.basename(filePath)} is already patched with tool name transformer`);
     return;
   }
 
@@ -156,7 +153,7 @@ for (const [originalName, definition] of toolDefinitionMap.entries()) {
     ? /server\.setRequestHandler\(\s*CallToolRequestSchema,\s*async\s*\(request:\s*CallToolRequest\):\s*Promise<CallToolResult>\s*=>\s*\{([^}]+)\}\s*\);/s
     : /server\.setRequestHandler\(\s*CallToolRequestSchema,\s*async\s*\(request\)\s*=>\s*\{([\s\S]*?)\}\s*\);/s;
 
-  content = content.replace(callHandlerPattern, (match, body) => {
+  content = content.replace(callHandlerPattern, (_match, body) => {
     // Replace the toolName extraction and lookup
     const newBody = body.replace(
       /const\s*\{\s*name:\s*toolName[^}]+\}\s*=\s*request\.params;\s*const\s*toolDefinition\s*=\s*toolDefinitionMap\.get\(toolName\);/,
@@ -184,7 +181,6 @@ for (const [originalName, definition] of toolDefinitionMap.entries()) {
 
   // Write the updated content
   await fs.writeFile(filePath, content);
-  console.log(`Successfully applied human-readable tool names to ${path.basename(filePath)}`);
 }
 
 // Run the patch

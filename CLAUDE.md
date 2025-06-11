@@ -11,27 +11,27 @@ This repository contains an Attio MCP (Model Context Protocol) server generated 
 ### Building and Running
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Build TypeScript code
-npm run build
+bun run build
 
 # Run the server (stdio mode)
-npm start
+bun start
 
 # Run tests
-npm test
-npm run test:watch     # Watch mode
-npm run test:coverage  # With coverage
+bun test
+bun test --watch       # Watch mode
+bun test --coverage    # With coverage
 
 # Run single test file
-NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/tool-name-transformer.test.ts
+bun test src/__tests__/tool-name-transformer.test.ts
 
 # Manual testing
-npm run test:manual    # Interactive test client
-npm run test:demo      # Demo script with sample commands  
-npm run test:names     # Test tool name transformations
-npm run test:server    # Raw server for JSON-RPC input
+bun run test:manual    # Interactive test client
+bun run test:demo      # Demo script with sample commands  
+bun run test:names     # Test tool name transformations
+bun run test:server    # Raw server for JSON-RPC input
 ```
 
 ### Testing the MCP Server
@@ -70,13 +70,13 @@ npm run test:names
 ### Code Quality
 ```bash
 # Run all checks (format, lint, typecheck)
-npm run check
+bun run check
 
 # Run individual tools
-npm run lint          # Lint with Biome
-npm run format        # Format with Biome  
-npm run typecheck     # TypeScript type checking
-npm run ci           # CI checks (for pre-commit)
+bun run lint          # Lint with Biome
+bun run format        # Format with Biome  
+bun run typecheck     # TypeScript type checking
+bun run ci           # CI checks (for pre-commit)
 ```
 
 ### Installation Scripts
@@ -159,16 +159,16 @@ LOG_LEVEL=info        # Logging verbosity
 ### Code Quality
 - Biome for linting and formatting (migrated from ESLint/Prettier)
 - Single quotes, 2-space indentation, trailing commas
-- Jest for testing with TypeScript support
+- Bun for testing with TypeScript support
 
 ## Development Workflow
 
 When modifying the MCP server:
 
 1. Make changes to `src/index.ts`
-2. Run `npm run check` to ensure code quality
-3. Build with `npm run build` (automatically applies tool name transformations)
-4. Test locally with `npm run test:manual`
+2. Run `bun run check` to ensure code quality
+3. Build with `bun run build` (automatically applies tool name transformations)
+4. Test locally with `bun run test:manual`
 5. Restart Claude/Cursor to load changes
 
 When adding new API endpoints:

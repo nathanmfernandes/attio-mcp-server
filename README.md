@@ -77,7 +77,7 @@ The MCP server exposes all Attio API endpoints as tools with human-readable name
 To test the server directly:
 
 ```bash
-npm start
+bun start
 ```
 
 ## Configuration
@@ -93,7 +93,7 @@ The server uses the following environment variables:
 1. **Server not showing in Claude/Cursor:**
    - Restart the application after installation
    - Check the logs for any errors
-   - Ensure the server is built: `npm run build`
+   - Ensure the server is built: `bun run build`
 
 2. **Authentication errors:**
    - Verify your access token in `.env`

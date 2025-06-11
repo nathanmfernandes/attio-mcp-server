@@ -1,12 +1,12 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, test } from 'bun:test';
 
 describe('Attio MCP Server Smoke Tests', () => {
-  it('should have required environment configuration', () => {
+  test('should have required environment configuration', () => {
     // Test that we can access environment variables
     expect(process.env).toBeDefined();
   });
 
-  it('should have valid server configuration', () => {
+  test('should have valid server configuration', () => {
     // These should be defined in the main module
     const SERVER_NAME = 'attio-mcp-server';
     const SERVER_VERSION = '1.0.0';
@@ -17,7 +17,7 @@ describe('Attio MCP Server Smoke Tests', () => {
     expect(API_BASE_URL).toBe('https://api.attio.com');
   });
 
-  it('should validate tool definition structure', () => {
+  test('should validate tool definition structure', () => {
     // Example tool definition structure
     const exampleTool = {
       name: 'getv2objects',
@@ -39,7 +39,7 @@ describe('Attio MCP Server Smoke Tests', () => {
     expect(exampleTool).toHaveProperty('securityRequirements');
   });
 
-  it('should handle missing access token gracefully', () => {
+  test('should handle missing access token gracefully', () => {
     const originalToken = process.env.ATTIO_ACCESS_TOKEN;
     delete process.env.ATTIO_ACCESS_TOKEN;
 
