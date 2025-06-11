@@ -94,3 +94,4 @@ mcp-server/.env
 
 # Archive - backup/old files
 archive/
+docs/README-OpenAPI-to-MCP-Generator.md
