@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Start the MCP server
-const server = spawn('node', [join(__dirname, 'build/index.js')], {
+const server = spawn('node', [join(__dirname, '..', 'build/index.js')], {
   stdio: ['pipe', 'pipe', 'pipe'],
 });
 
@@ -54,11 +54,10 @@ server.stdout.on('data', (data) => {
             .sort()
             .forEach((category) => {
               console.log(`\n${category}:`);
-              categorized[category]
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .forEach((tool) => {
-                  console.log(`  - ${tool.name}`);
-                });
+              // Preserve the server's ordering by not sorting here
+              categorized[category].forEach((tool) => {
+                console.log(`  - ${tool.name}`);
+              });
             });
 
           console.log(`\nTotal tools: ${response.result.tools.length}`);
