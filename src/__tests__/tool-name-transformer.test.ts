@@ -9,25 +9,25 @@ describe('Tool Name Transformer', () => {
     test('transforms object operations correctly', () => {
       expect(transformToolName('getv2objects')).toEqual({
         originalName: 'getv2objects',
-        humanReadableName: 'List_Objects',
+        humanReadableName: 'list_objects',
         category: 'Objects',
       });
 
       expect(transformToolName('postv2objects')).toEqual({
         originalName: 'postv2objects',
-        humanReadableName: 'Create_Object',
+        humanReadableName: 'create_object',
         category: 'Objects',
       });
 
       expect(transformToolName('getv2objectsbyobject')).toEqual({
         originalName: 'getv2objectsbyobject',
-        humanReadableName: 'Get_Object',
+        humanReadableName: 'get_object',
         category: 'Objects',
       });
 
       expect(transformToolName('patchv2objectsbyobject')).toEqual({
         originalName: 'patchv2objectsbyobject',
-        humanReadableName: 'Update_Object',
+        humanReadableName: 'update_object',
         category: 'Objects',
       });
     });
@@ -35,19 +35,19 @@ describe('Tool Name Transformer', () => {
     test('transforms record operations correctly', () => {
       expect(transformToolName('postv2objectsrecordsquery')).toEqual({
         originalName: 'postv2objectsrecordsquery',
-        humanReadableName: 'Query_Records',
+        humanReadableName: 'query_records',
         category: 'Records',
       });
 
       expect(transformToolName('putv2objectsrecords')).toEqual({
         originalName: 'putv2objectsrecords',
-        humanReadableName: 'Update_Record',
+        humanReadableName: 'update_record',
         category: 'Records',
       });
 
       expect(transformToolName('deletev2objectsrecordsbyrecordid')).toEqual({
         originalName: 'deletev2objectsrecordsbyrecordid',
-        humanReadableName: 'Delete_Record',
+        humanReadableName: 'delete_record',
         category: 'Records',
       });
     });
@@ -55,19 +55,19 @@ describe('Tool Name Transformer', () => {
     test('transforms attribute operations correctly', () => {
       expect(transformToolName('getv2attributes')).toEqual({
         originalName: 'getv2attributes',
-        humanReadableName: 'List_Attributes',
+        humanReadableName: 'list_attributes',
         category: 'Attributes',
       });
 
       expect(transformToolName('postv2attributesoptions')).toEqual({
         originalName: 'postv2attributesoptions',
-        humanReadableName: 'Create_Attribute_Option',
+        humanReadableName: 'create_attribute_option',
         category: 'Attributes',
       });
 
       expect(transformToolName('patchv2attributesstatusesbystatus')).toEqual({
         originalName: 'patchv2attributesstatusesbystatus',
-        humanReadableName: 'Update_Attribute_Status',
+        humanReadableName: 'update_attribute_status',
         category: 'Attributes',
       });
     });
@@ -75,19 +75,19 @@ describe('Tool Name Transformer', () => {
     test('transforms list operations correctly', () => {
       expect(transformToolName('getv2lists')).toEqual({
         originalName: 'getv2lists',
-        humanReadableName: 'List_Lists',
+        humanReadableName: 'list_lists',
         category: 'Lists',
       });
 
       expect(transformToolName('postv2listsentries')).toEqual({
         originalName: 'postv2listsentries',
-        humanReadableName: 'Create_List_Entry',
+        humanReadableName: 'create_list_entry',
         category: 'List Entries',
       });
 
       expect(transformToolName('getv2listsentriesbyentryid')).toEqual({
         originalName: 'getv2listsentriesbyentryid',
-        humanReadableName: 'Get_List_Entry',
+        humanReadableName: 'get_list_entry',
         category: 'List Entries',
       });
     });
@@ -95,13 +95,13 @@ describe('Tool Name Transformer', () => {
     test('transforms workspace operations correctly', () => {
       expect(transformToolName('getv2workspacemembers')).toEqual({
         originalName: 'getv2workspacemembers',
-        humanReadableName: 'List_Workspace_Members',
+        humanReadableName: 'list_workspace_members',
         category: 'Workspace',
       });
 
       expect(transformToolName('getv2self')).toEqual({
         originalName: 'getv2self',
-        humanReadableName: 'Get_Current_User',
+        humanReadableName: 'get_current_user',
         category: 'Authentication',
       });
     });
@@ -109,19 +109,19 @@ describe('Tool Name Transformer', () => {
     test('transforms content operations correctly', () => {
       expect(transformToolName('postv2notes')).toEqual({
         originalName: 'postv2notes',
-        humanReadableName: 'Create_Note',
+        humanReadableName: 'create_note',
         category: 'Notes',
       });
 
       expect(transformToolName('getv2tasks')).toEqual({
         originalName: 'getv2tasks',
-        humanReadableName: 'List_Tasks',
+        humanReadableName: 'list_tasks',
         category: 'Tasks',
       });
 
       expect(transformToolName('postv2comments')).toEqual({
         originalName: 'postv2comments',
-        humanReadableName: 'Create_Comment',
+        humanReadableName: 'create_comment',
         category: 'Comments',
       });
     });
@@ -143,7 +143,7 @@ describe('Tool Name Transformer', () => {
       expect(transformations.size).toBe(3);
       expect(transformations.get('getv2objects')).toEqual({
         originalName: 'getv2objects',
-        humanReadableName: 'List_Objects',
+        humanReadableName: 'list_objects',
         category: 'Objects',
       });
     });
@@ -166,6 +166,31 @@ describe('Tool Name Transformer', () => {
       expect(grouped.get('Objects')?.length).toBe(2);
       expect(grouped.get('Tasks')?.length).toBe(2);
       expect(grouped.get('Notes')?.length).toBe(1);
+    });
+
+    test('sorts tools by method order within categories', () => {
+      const toolNames = [
+        'postv2objects',
+        'patchv2objectsbyobject',
+        'getv2objects',
+        'getv2objectsbyobject',
+        'deletev2objectsrecordsbyrecordid',
+      ];
+
+      const transformations = getAllToolTransformations(toolNames);
+      const grouped = groupToolsByCategory(transformations);
+
+      const objectsTools = grouped.get('Objects') || [];
+      const recordsTools = grouped.get('Records') || [];
+
+      // Objects should be sorted: list (get multiple) -> get (single) -> create -> update
+      expect(objectsTools[0].humanReadableName).toBe('list_objects');
+      expect(objectsTools[1].humanReadableName).toBe('get_object');
+      expect(objectsTools[2].humanReadableName).toBe('create_object');
+      expect(objectsTools[3].humanReadableName).toBe('update_object');
+
+      // Records should have delete operations
+      expect(recordsTools[0].humanReadableName).toBe('delete_record');
     });
   });
 });

@@ -16,12 +16,12 @@ export interface ToolTransformation {
 function getSingular(resourceName: string): string {
   // Handle special cases
   const specialCases: Record<string, string> = {
-    'Attribute_Statuses': 'Attribute_Status',
-    'List_Entries': 'List_Entry',
-    'List_Entry_Attribute_Values': 'List_Entry_Attribute_Values',
-    'Record_Attribute_Values': 'Record_Attribute_Values',
-    'Record_Entries': 'Record_Entries',
-    'Current_User': 'Current_User',
+    Attribute_Statuses: 'Attribute_Status',
+    List_Entries: 'List_Entry',
+    List_Entry_Attribute_Values: 'List_Entry_Attribute_Values',
+    Record_Attribute_Values: 'Record_Attribute_Values',
+    Record_Entries: 'Record_Entries',
+    Current_User: 'Current_User',
   };
 
   if (specialCases[resourceName]) {
@@ -178,7 +178,7 @@ export function transformToolName(originalName: string): ToolTransformation {
 
   return {
     originalName,
-    humanReadableName,
+    humanReadableName: humanReadableName.toLowerCase(),
     category,
   };
 }
@@ -212,9 +212,35 @@ export function groupToolsByCategory(
     grouped.get(category)!.push(transformation);
   }
 
-  // Sort tools within each category
+  // Sort tools within each category by method first, then by resource name
   for (const [category, tools] of grouped.entries()) {
-    tools.sort((a, b) => a.humanReadableName.localeCompare(b.humanReadableName));
+    tools.sort((a, b) => {
+      // Extract method (first part before underscore)
+      const methodA = a.humanReadableName.split('_')[0];
+      const methodB = b.humanReadableName.split('_')[0];
+      
+      // Define method priority order
+      const methodOrder = ['list', 'get', 'create', 'update', 'delete', 'query'];
+      const orderA = methodOrder.indexOf(methodA);
+      const orderB = methodOrder.indexOf(methodB);
+      
+      // If both methods are in our defined order, sort by that order
+      if (orderA !== -1 && orderB !== -1) {
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+      }
+      // If one method is in our order and the other isn't, prioritize the ordered one
+      else if (orderA !== -1) {
+        return -1;
+      }
+      else if (orderB !== -1) {
+        return 1;
+      }
+      
+      // If methods are the same or both not in our defined order, sort alphabetically
+      return a.humanReadableName.localeCompare(b.humanReadableName);
+    });
   }
 
   return grouped;
