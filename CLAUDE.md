@@ -61,10 +61,10 @@ npm run test:names
 {"jsonrpc": "2.0", "method": "tools/list", "id": 1}
 
 # 2. Call a tool with human-readable name
-{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "List_Objects", "arguments": {}}, "id": 2}
+{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "list_objects", "arguments": {}}, "id": 2}
 
 # 3. Get workspace info
-{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "Get_Current_User", "arguments": {}}, "id": 3}
+{"jsonrpc": "2.0", "method": "tools/call", "params": {"name": "get_current_user", "arguments": {}}, "id": 3}
 ```
 
 ### Code Quality
@@ -103,7 +103,7 @@ The MCP server (`src/index.ts`) follows a tool-based architecture:
    - `tool-name-transformer.ts`: Converts technical names to human-readable ones
    - `apply-tool-names.ts`: Patches both source and build files automatically
    - Applied as postbuild hook to maintain consistency
-   - Maps like `getv2objects` → `List Objects`, `postv2tasks` → `Create Task`
+   - Maps like `getv2objects` → `list_objects`, `postv2tasks` → `create_task`
 
 3. **Request Flow**:
    - Human-readable tool names are mapped back to original names for execution

@@ -4,7 +4,7 @@ This is a Model Context Protocol (MCP) server that provides access to the Attio 
 
 ## Features
 
-- **🏷️ Human-Readable Tool Names**: Automatically transforms technical API names (like `getv2objects`) into clear, categorized names (like `List Objects`)
+- **🏷️ Human-Readable Tool Names**: Automatically transforms technical API names (like `getv2objects`) into clear, categorized names (like `list_objects`)
 - **📊 Full API Coverage**: Access to objects, records, attributes, lists, tasks, notes, and more
 - **📁 Organized by Category**: Tools are grouped into logical categories for easy navigation
 - **🤖 AI Assistant Ready**: Works seamlessly with Claude Desktop and Cursor
@@ -54,23 +54,23 @@ This will automatically:
 The MCP server exposes all Attio API endpoints as tools with human-readable names, organized by category:
 
 ### Core Data Management
-- **Objects**: `List Objects`, `Create Object`, `Get Object`, `Update Object`
-- **Records**: `List Records`, `Create Record`, `Query Records`, `Delete Record`
-- **Attributes**: `List Attributes`, `Create Attribute`, `Update Attribute Status`
+- **Objects**: `list_objects`, `create_object`, `get_object`, `update_object`
+- **Records**: `list_records`, `create_record`, `query_records`, `delete_record`
+- **Attributes**: `list_attributes`, `create_attribute`, `update_attribute_status`
 
 ### Lists & Entries
-- **Lists**: `List Lists`, `Create List`, `Update List`
-- **List Entries**: `Create List Entry`, `Query List Entries`, `Update List Entry`
+- **Lists**: `list_lists`, `create_list`, `update_list`
+- **List Entries**: `create_list_entry`, `query_list_entries`, `update_list_entry`
 
 ### Collaboration
-- **Tasks**: `List Tasks`, `Create Task`, `Update Task`, `Delete Task`
-- **Notes**: `List Notes`, `Create Note`, `Get Note`, `Delete Note`
-- **Comments**: `Create Comment`, `Get Comment`, `List Comment Threads`
+- **Tasks**: `list_tasks`, `create_task`, `update_task`, `delete_task`
+- **Notes**: `list_notes`, `create_note`, `get_note`, `delete_note`
+- **Comments**: `create_comment`, `get_comment`, `list_comment_threads`
 
 ### Administration
-- **Workspace**: `List Workspace Members`, `Get Workspace Member`
-- **Webhooks**: `List Webhooks`, `Create Webhook`, `Update Webhook`
-- **Authentication**: `Get Current User`
+- **Workspace**: `list_workspace_members`, `get_workspace_member`
+- **Webhooks**: `list_webhooks`, `create_webhook`, `update_webhook`
+- **Authentication**: `get_current_user`
 
 ## Manual Testing
 
