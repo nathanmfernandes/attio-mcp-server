@@ -1,6 +1,6 @@
 # Attio MCP Server
 
-This is a Model Context Protocol (MCP) server that provides access to the Attio API, enabling AI assistants like Claude and Cursor to interact with your Attio workspace.
+A high-performance Model Context Protocol (MCP) server that provides seamless access to the Attio API, enabling AI assistants like Claude and Cursor to interact with your Attio workspace through human-readable tools.
 
 ## Features
 
@@ -8,22 +8,30 @@ This is a Model Context Protocol (MCP) server that provides access to the Attio 
 - **📊 Full API Coverage**: Access to objects, records, attributes, lists, tasks, notes, and more
 - **📁 Organized by Category**: Tools are grouped into logical categories for easy navigation
 - **🤖 AI Assistant Ready**: Works seamlessly with Claude Desktop and Cursor
+- **⚡ High Performance**: Built with Bun for fast execution and native TypeScript support
+- **🔧 Easy Installation**: Automated setup scripts with intelligent configuration detection
 
 ## Quick Start
 
-1. **Install and configure:**
+1. **Prerequisites:**
+   ```bash
+   # Install Bun (if not already installed)
+   curl -fsSL https://bun.sh/install | bash
+   ```
+
+2. **Install and configure:**
    ```bash
    ./install.sh
    ```
 
-2. **Add your Attio access token to `.env`:**
+3. **Add your Attio access token to `.env`:**
    ```
    ATTIO_ACCESS_TOKEN=your_token_here
    ```
    
    Get your token from: https://app.attio.com/settings/api
 
-3. **Restart Claude Desktop or Cursor**
+4. **Restart Claude Desktop or Cursor**
 
 ## Manual Installation
 
@@ -100,16 +108,39 @@ The server uses the following environment variables:
    - Ensure the token has the necessary permissions
 
 3. **Build errors:**
-   - Run `npm install` to ensure all dependencies are installed
-   - Run `npm run build` to compile TypeScript
+   - Run `bun install` to ensure all dependencies are installed
+   - Run `bun run build` to compile TypeScript
 
 ## Development
 
 To modify the server:
 
 1. Edit `src/index.ts`
-2. Run `npm run build`
-3. Restart Claude/Cursor to load changes
+2. Run `bun run build`
+3. Test with `bun test`
+4. Restart Claude/Cursor to load changes
+
+### Development Commands
+
+```bash
+# Install dependencies
+bun install
+
+# Build the server
+bun run build
+
+# Run tests
+bun test
+
+# Run tests with coverage
+bun test --coverage
+
+# Format and lint code
+bun run check
+
+# Manual testing
+bun run test:manual
+```
 
 ## Support
 
@@ -117,3 +148,17 @@ For issues with:
 - **This MCP server**: Create an issue in this repository
 - **Attio API**: Contact support@attio.com
 - **MCP Protocol**: Visit https://modelcontextprotocol.io
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is open source and available under the MIT License.
+
+---
+
+<div align="center">
+<sub>Built with ❤️ for the AI community</sub>
+</div>

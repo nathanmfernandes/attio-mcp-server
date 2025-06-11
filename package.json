@@ -1,7 +1,11 @@
 {
   "name": "attio-mcp-server",
   "version": "1.0.0",
-  "description": "MCP Server generated from OpenAPI spec for attio-mcp-server",
+  "description": "High-performance Model Context Protocol server for Attio API integration with AI assistants",
+  "author": {
+    "name": "Brian Roach",
+    "url": "https://linkedin.com/in/brian-roach-"
+  },
   "private": true,
   "type": "module",
   "main": "build/index.js",
@@ -25,8 +29,25 @@
     "apply-tool-names": "bun src/apply-tool-names.ts",
     "postbuild": "bun run apply-tool-names"
   },
+  "keywords": [
+    "attio",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "assistant",
+    "claude",
+    "cursor",
+    "api",
+    "crm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsbrex/attio-mcp-server"
+  },
+  "homepage": "https://github.com/itsbrex/attio-mcp-server#readme",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.0",
