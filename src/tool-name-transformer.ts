@@ -96,7 +96,7 @@ export function transformToolName(originalName: string): ToolTransformation {
   const methodMap: Record<string, string> = {
     get: 'List',
     post: 'Create',
-    put: 'Update',
+    put: 'Replace',
     patch: 'Update',
     delete: 'Delete',
   };
@@ -108,6 +108,7 @@ export function transformToolName(originalName: string): ToolTransformation {
   let resourceType = '';
 
   // Handle "by" patterns (e.g., getv2objectsbyobject)
+  let isBulkOperation = false;
   if (resourcePath.includes('by')) {
     const parts = resourcePath.split('by');
     resourceType = parts[0];
@@ -119,6 +120,8 @@ export function transformToolName(originalName: string): ToolTransformation {
     }
   } else {
     resourceType = resourcePath;
+    // Operations without "by" pattern are bulk operations (except for listing)
+    isBulkOperation = method !== 'get';
   }
 
   // Clean up resource type names
@@ -170,8 +173,11 @@ export function transformToolName(originalName: string): ToolTransformation {
     humanReadableName = `${action}_${singular.replace(/\s+/g, '_')}`;
   } else if (action === 'Query') {
     humanReadableName = `${action}_${cleanResourceName.replace(/\s+/g, '_')}`;
+  } else if (isBulkOperation) {
+    // For bulk operations (replace/update multiple items)
+    humanReadableName = `${action}_${cleanResourceName.replace(/\s+/g, '_')}`;
   } else {
-    // For update/delete operations
+    // For single item operations (replace/update/delete single item)
     const singular = getSingular(cleanResourceName);
     humanReadableName = `${action}_${singular.replace(/\s+/g, '_')}`;
   }
