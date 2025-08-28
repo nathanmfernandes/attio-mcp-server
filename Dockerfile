@@ -43,4 +43,4 @@ ENV PORT=3000 \
 EXPOSE 8080
 
 # Expose MCP over HTTP at /mcp (stateless)
-CMD ["mcp-proxy","--host","0.0.0.0","--port","8080","--stateless","/usr/local/bin/run-attio"]
+CMD ["mcp-proxy","--host","0.0.0.0","--port","8080","--server","sse","--sseEndpoint","/sse","/usr/local/bin/run-attio"]
