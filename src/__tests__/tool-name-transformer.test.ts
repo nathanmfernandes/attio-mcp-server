@@ -42,13 +42,26 @@ describe('Tool Name Transformer', () => {
 
       expect(transformToolName('putv2objectsrecords')).toEqual({
         originalName: 'putv2objectsrecords',
-        humanReadableName: 'update_record',
+        humanReadableName: 'replace_records',
         category: 'Records',
       });
 
       expect(transformToolName('deletev2objectsrecordsbyrecordid')).toEqual({
         originalName: 'deletev2objectsrecordsbyrecordid',
         humanReadableName: 'delete_record',
+        category: 'Records',
+      });
+
+      // Test the previously conflicting record operations
+      expect(transformToolName('putv2objectsrecordsbyrecordid')).toEqual({
+        originalName: 'putv2objectsrecordsbyrecordid',
+        humanReadableName: 'replace_record',
+        category: 'Records',
+      });
+
+      expect(transformToolName('patchv2objectsrecordsbyrecordid')).toEqual({
+        originalName: 'patchv2objectsrecordsbyrecordid',
+        humanReadableName: 'update_record',
         category: 'Records',
       });
     });
@@ -89,6 +102,25 @@ describe('Tool Name Transformer', () => {
       expect(transformToolName('getv2listsentriesbyentryid')).toEqual({
         originalName: 'getv2listsentriesbyentryid',
         humanReadableName: 'get_list_entry',
+        category: 'List Entries',
+      });
+
+      // Test the previously conflicting list entry operations
+      expect(transformToolName('putv2listsentries')).toEqual({
+        originalName: 'putv2listsentries',
+        humanReadableName: 'replace_list_entries',
+        category: 'List Entries',
+      });
+
+      expect(transformToolName('putv2listsentriesbyentryid')).toEqual({
+        originalName: 'putv2listsentriesbyentryid',
+        humanReadableName: 'replace_list_entry',
+        category: 'List Entries',
+      });
+
+      expect(transformToolName('patchv2listsentriesbyentryid')).toEqual({
+        originalName: 'patchv2listsentriesbyentryid',
+        humanReadableName: 'update_list_entry',
         category: 'List Entries',
       });
     });
