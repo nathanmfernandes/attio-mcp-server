@@ -13,8 +13,9 @@ const __dirname = path.dirname(__filename);
 
 async function applyToolNames() {
   // Apply to both source and build
-  const sourcePath = path.join(__dirname, 'index.ts');
-  const buildPath = path.join(__dirname, '..', 'build', 'index.js');
+  const rootDir = process.cwd();
+  const sourcePath = path.join(rootDir, 'src', 'index.ts');
+  const buildPath = path.join(rootDir, 'build', 'index.js');
 
   try {
     // Process both source and build files
