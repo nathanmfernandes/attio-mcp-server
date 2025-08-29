@@ -27,7 +27,7 @@
     "test:names": "bun tools/test-transformed-names.js",
     "test:server": "bun -e \"console.log('Starting server... Send JSON-RPC commands via stdin'); process.loadEnvFile?.('.env'); import('./build/index.js')\"",
     "apply-tool-names": "bun src/apply-tool-names.ts",
-    "postbuild": "bun run apply-tool-names"
+    "postbuild": "node build/apply-tool-names.js"
   },
   "keywords": [
     "attio",
