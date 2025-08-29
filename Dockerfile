@@ -18,21 +18,29 @@ COPY . /srv/app
 # Install deps
 RUN bun install
 
-# Try to build if a build script exists; otherwise it’s fine
-RUN (bun run build || echo "No build script; continuing")
+# Build the project and apply tool name transformations
+RUN npm run build && \
+    if [ -f "build/apply-tool-names.js" ]; then \
+        node build/apply-tool-names.js; \
+    else \
+        echo "Tool name transformation script not found, skipping"; \
+    fi
 
 # Robust launcher: prefer compiled JS, fallback to TS
 RUN printf '%s\n' \
   '#!/bin/sh' \
   'set -e' \
   'APP_DIR="/srv/app"' \
+  'if [ -f "$APP_DIR/build/index.js" ]; then' \
+  '  exec node "$APP_DIR/build/index.js"' \
+  'fi' \
   'if [ -f "$APP_DIR/dist/index.js" ]; then' \
   '  exec node "$APP_DIR/dist/index.js"' \
   'fi' \
   'if [ -f "$APP_DIR/src/index.ts" ]; then' \
   '  exec bun "$APP_DIR/src/index.ts"' \
   'fi' \
-  'echo "ERROR: Could not find Attio MCP entrypoint (dist/index.js or src/index.ts)!" >&2' \
+  'echo "ERROR: Could not find Attio MCP entrypoint!" >&2' \
   'exit 1' \
   > /usr/local/bin/run-attio && chmod +x /usr/local/bin/run-attio
 
